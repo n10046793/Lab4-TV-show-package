@@ -7,6 +7,12 @@ from tvsummary.aggregations import (
     ShowsPerGenre,
 )
 from tvsummary.config import API_URL, OUTPUT_PATH, REQUEST_TIMEOUT
+from tvsummary.errors import (
+    BadResponseError,
+    DownloadError,
+    SettingsError,
+    TvSummaryError,
+)
 from tvsummary.models import ShowRecord
 from tvsummary.report import build_summary, write_summary
 from tvsummary.sources import TVMazeSource
@@ -23,4 +29,8 @@ __all__ = [
     "ShowsPerGenre",
     "build_summary",
     "write_summary",
+    "TvSummaryError",
+    "DownloadError",
+    "BadResponseError",
+    "SettingsError",
 ]
