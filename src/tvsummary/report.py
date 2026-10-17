@@ -1,6 +1,7 @@
 """Build the summary dictionary and write it to a JSON file."""
 
 import json
+import logging
 from pathlib import Path
 
 from tvsummary.aggregations import (
@@ -9,6 +10,8 @@ from tvsummary.aggregations import (
     ShowsPerGenre,
 )
 from tvsummary.config import API_URL
+
+logger = logging.getLogger(__name__)
 
 
 def most_common_genre(genre_counts):
@@ -28,6 +31,7 @@ def build_summary(records):
     Each aggregation is asked for its answer through the same
     compute() method; the loop never checks which subclass it holds.
     """
+    logger.info("Building the summary from %d records.", len(records))
     aggregations = [ShowsPerGenre(), AvgRatingByLanguage(), ShowsPerDecade()]
 
     results = {}
@@ -50,3 +54,5 @@ def build_summary(records):
 def write_summary(summary, path):
     """Write the summary dictionary to a JSON file."""
     Path(path).write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    logger.info("Wrote the summary to %s", path)
+

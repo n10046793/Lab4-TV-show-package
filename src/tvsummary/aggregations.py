@@ -1,5 +1,9 @@
 """The aggregations: a base class with one subclass per question."""
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Aggregation:
     """Base class for the aggregations.
@@ -75,3 +79,4 @@ class ShowsPerDecade(Aggregation):
             decade = year[:3] + "0s"
             counts[decade] = counts.get(decade, 0) + 1
         return counts
+

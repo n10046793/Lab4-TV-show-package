@@ -1,5 +1,9 @@
 """The record class: one clean TV show."""
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class ShowRecord:
     """One TV show, with its values cleaned when it is created.
@@ -23,3 +27,4 @@ class ShowRecord:
     def __str__(self):
         """A one-line description of the show."""
         return f"{self.name} ({self.language}) - rating {self.rating}"
+

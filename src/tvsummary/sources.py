@@ -1,10 +1,14 @@
 """Fetching records. This is the only module that uses requests."""
 
+import logging
+
 import requests
 
 from tvsummary.config import API_URL, REQUEST_TIMEOUT
 from tvsummary.errors import BadResponseError, DownloadError
 from tvsummary.models import ShowRecord
+
+logger = logging.getLogger(__name__)
 
 
 class TVMazeSource:
@@ -24,6 +28,7 @@ class TVMazeSource:
         Raises DownloadError if the download fails, and BadResponseError
         if the answer does not look like a list of show dictionaries.
         """
+        logger.debug("Downloading show records from %s", self.url)
         try:
             response = requests.get(self.url, timeout=self.timeout)
             response.raise_for_status()
@@ -42,4 +47,6 @@ class TVMazeSource:
             if not isinstance(item, dict):
                 raise BadResponseError("One of the shows was not a dictionary.")
             records.append(ShowRecord(item))
+        logger.info("Downloaded %d show records.", len(records))
         return records
+
