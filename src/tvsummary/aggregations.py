@@ -79,4 +79,3 @@ class ShowsPerDecade(Aggregation):
             decade = year[:3] + "0s"
             counts[decade] = counts.get(decade, 0) + 1
         return counts
-

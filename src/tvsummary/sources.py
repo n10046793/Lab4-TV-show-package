@@ -49,4 +49,3 @@ class TVMazeSource:
             records.append(ShowRecord(item))
         logger.info("Downloaded %d show records.", len(records))
         return records
-

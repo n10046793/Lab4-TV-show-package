@@ -55,4 +55,3 @@ def write_summary(summary, path):
     """Write the summary dictionary to a JSON file."""
     Path(path).write_text(json.dumps(summary, indent=2), encoding="utf-8")
     logger.info("Wrote the summary to %s", path)
-

@@ -27,4 +27,3 @@ class ShowRecord:
     def __str__(self):
         """A one-line description of the show."""
         return f"{self.name} ({self.language}) - rating {self.rating}"
-
