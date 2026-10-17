@@ -4,9 +4,9 @@ import logging
 
 import requests
 
-from tvsummary.config import API_URL, REQUEST_TIMEOUT
 from tvsummary.errors import BadResponseError, DownloadError
 from tvsummary.models import ShowRecord
+from tvsummary.settings import Settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +17,9 @@ class TVMazeSource:
     Returns ShowRecord objects, not raw dictionaries.
     """
 
-    def __init__(self) -> None:
-        """Save the URL and timeout from the config module."""
-        self.url = API_URL
-        self.timeout = REQUEST_TIMEOUT
+    def __init__(self, settings: Settings) -> None:
+        """Save the settings this source should download with."""
+        self.settings = settings
 
     def fetch(self) -> list[ShowRecord]:
         """Download the records and return them as ShowRecord objects.
@@ -28,13 +27,15 @@ class TVMazeSource:
         Raises DownloadError if the download fails, and BadResponseError
         if the answer does not look like a list of show dictionaries.
         """
-        logger.debug("Downloading show records from %s", self.url)
+        logger.debug("Downloading show records from %s", self.settings.source_url)
         try:
-            response = requests.get(self.url, timeout=self.timeout)
+            response = requests.get(
+                self.settings.source_url, timeout=self.settings.timeout
+            )
             response.raise_for_status()
         except requests.RequestException as exc:
             raise DownloadError(
-                f"Could not download the show records from {self.url}."
+                f"Could not download the show records from {self.settings.source_url}."
             ) from exc
         try:
             items = response.json()
