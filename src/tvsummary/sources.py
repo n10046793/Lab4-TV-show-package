@@ -31,6 +31,7 @@ class TVMazeSource:
             return [ShowRecord(item) for item in response.json()]
         except requests.RequestException:
             print(
-                "Could not download the show records. Check your connection and try again."
+                "Could not download the show records. "
+                "Check your connection and try again."
             )
             return None
