@@ -43,4 +43,3 @@ class TVMazeSource:
                 raise BadResponseError("One of the shows was not a dictionary.")
             records.append(ShowRecord(item))
         return records
-
