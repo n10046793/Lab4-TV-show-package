@@ -11,12 +11,12 @@ class TVMazeSource:
 
     Returns ShowRecord objects, not raw dictionaries.
     """
+
     def __init__(self):
         """Save the URL and timeout from the config module."""
 
         self.url = API_URL
         self.timeout = REQUEST_TIMEOUT
-
 
     def fetch(self):
         """Download the records and return them as ShowRecord objects.
@@ -30,5 +30,7 @@ class TVMazeSource:
             response.raise_for_status()
             return [ShowRecord(item) for item in response.json()]
         except requests.RequestException:
-            print("Could not download the show records. Check your connection and try again.")
+            print(
+                "Could not download the show records. Check your connection and try again."
+            )
             return None

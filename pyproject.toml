@@ -11,3 +11,9 @@ dependencies = ["requests"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+disallow_untyped_defs = true
