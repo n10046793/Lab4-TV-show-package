@@ -59,5 +59,12 @@
     "2000s": 51,
     "1990s": 8,
     "1980s": 2
-  }
+  },
+  "featured_shows": [
+    "Stalker",
+    "Last Man Standing",
+    "From Dusk Till Dawn: The Series",
+    "House of Cards",
+    "The Flash"
+  ]
 }
