@@ -1,6 +1,9 @@
 """The aggregations: a base class with one subclass per question."""
 
 import logging
+from typing import Any
+
+from tvsummary.models import ShowRecord
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +18,7 @@ class Aggregation:
 
     name = "aggregation"
 
-    def compute(self, records):
+    def compute(self, records: list[ShowRecord]) -> dict[str, Any]:
         """Work out this aggregation's answer from the records."""
         raise NotImplementedError
 
@@ -29,8 +32,8 @@ class ShowsPerGenre(Aggregation):
 
     name = "shows_per_genre"
 
-    def compute(self, records):
-        counts = {}
+    def compute(self, records: list[ShowRecord]) -> dict[str, int]:
+        counts: dict[str, int] = {}
         for record in records:
             for genre in record.genres:
                 counts[genre] = counts.get(genre, 0) + 1
@@ -46,9 +49,9 @@ class AvgRatingByLanguage(Aggregation):
 
     name = "average_rating_by_language"
 
-    def compute(self, records):
-        totals = {}
-        counts = {}
+    def compute(self, records: list[ShowRecord]) -> dict[str, float]:
+        totals: dict[str, float] = {}
+        counts: dict[str, int] = {}
         for record in records:
             if record.language is None or record.rating is None:
                 continue
@@ -68,8 +71,8 @@ class ShowsPerDecade(Aggregation):
 
     name = "shows_per_decade"
 
-    def compute(self, records):
-        counts = {}
+    def compute(self, records: list[ShowRecord]) -> dict[str, int]:
+        counts: dict[str, int] = {}
         for record in records:
             if not record.premiered:
                 continue

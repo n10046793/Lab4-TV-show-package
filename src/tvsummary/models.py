@@ -1,6 +1,7 @@
 """The record class: one clean TV show."""
 
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,7 @@ class ShowRecord:
     of the program can trust what it gets from a record.
     """
 
-    def __init__(self, data):
+    def __init__(self, data: dict[str, Any]) -> None:
         """Pull the fields we need out of one raw API dictionary."""
         self.name = data.get("name") or "Unknown"
         genres = data.get("genres")
@@ -24,6 +25,6 @@ class ShowRecord:
         premiered = data.get("premiered")
         self.premiered = premiered if isinstance(premiered, str) else None
 
-    def __str__(self):
+    def __str__(self) -> str:
         """A one-line description of the show."""
         return f"{self.name} ({self.language}) - rating {self.rating}"

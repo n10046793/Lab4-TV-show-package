@@ -7,17 +7,20 @@ import platform
 import random
 from dataclasses import asdict
 from pathlib import Path
+from typing import Any
 
 from tvsummary.aggregations import (
     AvgRatingByLanguage,
     ShowsPerDecade,
     ShowsPerGenre,
 )
+from tvsummary.models import ShowRecord
+from tvsummary.settings import Settings
 
 logger = logging.getLogger(__name__)
 
 
-def most_common_genre(genre_counts):
+def most_common_genre(genre_counts: dict[str, int]) -> str | None:
     """Return the genre with the highest count."""
     top_genre = None
     top_count = 0
@@ -28,7 +31,7 @@ def most_common_genre(genre_counts):
     return top_genre
 
 
-def featured_shows(records, settings):
+def featured_shows(records: list[ShowRecord], settings: Settings) -> list[str]:
     """Pick sample_size show names using the seeded random generator.
 
     The same seed always gives the same list.
@@ -38,7 +41,7 @@ def featured_shows(records, settings):
     return random.Random(settings.seed).sample(names, count)
 
 
-def build_summary(records, settings):
+def build_summary(records: list[ShowRecord], settings: Settings) -> dict[str, Any]:
     """Combine the aggregations into one dictionary ready to write.
 
     Each aggregation is asked for its answer through the same
@@ -65,7 +68,7 @@ def build_summary(records, settings):
     }
 
 
-def write_summary(summary, path):
+def write_summary(summary: dict[str, Any], path: str | Path) -> None:
     """Write the summary dictionary to a JSON file."""
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -73,7 +76,7 @@ def write_summary(summary, path):
     logger.info("Wrote the summary to %s", path)
 
 
-def write_run_info(summary_path, settings):
+def write_run_info(summary_path: str | Path, settings: Settings) -> None:
     """Write run_info.json next to the summary file.
 
     It records the settings used, the Python version, and the
@@ -91,7 +94,7 @@ def write_run_info(summary_path, settings):
     logger.info("Wrote the run info to %s", target)
 
 
-def _tool_version(name):
+def _tool_version(name: str) -> str:
     """Return the installed version of a tool, or 'unknown'."""
     try:
         return importlib.metadata.version(name)

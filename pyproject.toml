@@ -17,3 +17,9 @@ select = ["E", "F", "I", "B", "UP"]
 
 [tool.mypy]
 disallow_untyped_defs = true
+packages = ["tvsummary"]
+
+[[tool.mypy.overrides]]
+module = "requests.*"
+ignore_missing_imports = true
+
