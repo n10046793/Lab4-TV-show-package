@@ -1,21 +1,37 @@
-"""Thin entry point: wire the package pieces together."""
+"""Run the program from the command line: python -m tvsummary.main."""
 
+import argparse
 import logging
 import sys
 from pathlib import Path
 
-from tvsummary import TVMazeSource, build_summary, write_run_info, write_summary
 from tvsummary.errors import SettingsError, TvSummaryError
 from tvsummary.logging_setup import setup_logging
+from tvsummary.report import build_summary, write_run_info, write_summary
 from tvsummary.settings import load_settings
+from tvsummary.sources import TVMazeSource
 
 logger = logging.getLogger(__name__)
 
 
-def main() -> int:
-    """Download the records, summarize them and write the summary file."""
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse the command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Summarize TV show records from the TVMaze API."
+    )
+    parser.add_argument(
+        "--config",
+        default="config/tvsummary.toml",
+        help="Path to the TOML settings file.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Run the whole pipeline. Returns 0 on success, 1 on expected failure."""
+    args = parse_args(argv)
     try:
-        settings = load_settings("config/tvsummary.toml")
+        settings = load_settings(args.config)
     except SettingsError as exc:
         setup_logging("INFO")
         logger.error("Could not load the settings: %s", exc)
