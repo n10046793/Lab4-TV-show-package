@@ -1,45 +1,48 @@
-"""Tests for the aggregation classes. No network: the records are hand-made."""
+"""Tests for the three aggregation classes. No network."""
 
-import unittest
+import pytest
 
-from tvsummary.aggregations import AvgRatingByLanguage, ShowsPerGenre
+from tvsummary.aggregations import (
+    AvgRatingByLanguage,
+    ShowsPerDecade,
+    ShowsPerGenre,
+)
 from tvsummary.models import ShowRecord
+from tvsummary.report import most_common_genre
 
 
-def make_show(name, genres, language, rating, premiered):
-    """Build one ShowRecord from plain values, like the API would give."""
-    return ShowRecord(
-        {
-            "name": name,
-            "genres": genres,
-            "language": language,
-            "rating": {"average": rating},
-            "premiered": premiered,
-        }
-    )
+def test_shows_per_genre_counts_each_genre(
+    sample_records: list[ShowRecord],
+) -> None:
+    assert ShowsPerGenre().compute(sample_records) == {"Drama": 2, "Comedy": 2}
 
 
-class TestShowsPerGenre(unittest.TestCase):
-    """Check the genre counts on three hand-made shows."""
-
-    def test_counts_each_genre(self):
-        records = [
-            make_show("A", ["Drama"], "English", 8.0, "2010-01-01"),
-            make_show("B", ["Drama", "Comedy"], "English", 7.0, "2012-01-01"),
-            make_show("C", [], "English", 6.0, "2015-01-01"),
-        ]
-        result = ShowsPerGenre().compute(records)
-        self.assertEqual(result, {"Drama": 2, "Comedy": 1})
-
-    def test_average_rating_skips_missing_ratings(self):
-        records = [
-            make_show("A", ["Drama"], "English", 8.0, "2010-01-01"),
-            make_show("B", ["Drama"], "English", 6.0, "2012-01-01"),
-            make_show("C", ["Drama"], "English", None, "2015-01-01"),
-        ]
-        result = AvgRatingByLanguage().compute(records)
-        self.assertEqual(result, {"English": 7.0})
+def test_avg_rating_by_language_skips_missing_ratings(
+    sample_records: list[ShowRecord],
+) -> None:
+    assert AvgRatingByLanguage().compute(sample_records) == {
+        "English": 8.0,
+        "French": 9.0,
+    }
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_shows_per_decade_groups_by_decade(
+    sample_records: list[ShowRecord],
+) -> None:
+    assert ShowsPerDecade().compute(sample_records) == {
+        "2000s": 1,
+        "1990s": 1,
+        "2010s": 1,
+    }
+
+
+@pytest.mark.parametrize(
+    "counts, expected",
+    [
+        ({"Drama": 3, "Comedy": 1}, "Drama"),
+        ({"Comedy": 5}, "Comedy"),
+        ({}, None),
+    ],
+)
+def test_most_common_genre(counts: dict[str, int], expected: str | None) -> None:
+    assert most_common_genre(counts) == expected
